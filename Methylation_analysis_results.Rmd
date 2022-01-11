@@ -1,0 +1,72 @@
+---
+title: "Methylation analysis result"
+author: Alexis Hucteau
+date: "`r Sys.Date()`"
+output:
+    html_document:
+      toc: yes
+      toc_float: yes
+      theme: united
+editor_options:
+  markdown:
+    wrap: sentence
+---
+
+# IDHm +/- Inhibitor & CD34+ Methylation analysis
+
+Analyse des données de méthylation chez les patients atteints de LAM ayant une mutation sur un des gènes IDH et dans des cellules CD34+.
+
+# Baseline analysis
+
+## DMR Good responder Baseline vs Control
+
+Régions différentiellement méthylées chez les patients qui répondront au traitement à l'inhibiteur d'IDHm comparé aux cellules CD34+. {#GR-C}
+
+```{r}
+DMR_GR_C <- read.csv("Results_DMR/DMR_Good_Baseline_vs_Control.csv", row.names = 1)
+
+head(DMR_GR_C)
+```
+
+## DMR Bad responder Baseline vs Control
+Régions différentiellement méthylées chez les patients qui ne répondront pas au traitement à l'inhibiteur d'IDHm comparé aux cellules CD34+. {#BR-C}
+
+```{r}
+DMR_BR_C <- read.csv("Results_DMR/DMR_Bad_Baseline_vs_Control.csv", row.names = 1)
+
+head(DMR_BR_C)
+```
+
+## Specific Bad response DMR
+
+```{r}
+Bad_response_Baseline_DMR <- read.csv("Results_DMR/Specific_Bad_response.csv", row.names = 1)
+
+head(Bad_response_Baseline_DMR)
+```
+
+# Post Treatment analysis
+
+## DMR Good responder Post treatment vs Control
+
+```{r}
+Good_response_Post_DMR <- read.csv("Results_DMR/DMR_Good_Post_vs_Control.csv", row.names = 1)
+
+head(Good_response_Post_DMR)
+```
+
+## DMR Bad responder Post treatment vs Control
+
+```{r}
+Bad_response_Post_DMR <- read.csv("Results_DMR/DMR_Bad_Post_vs_Control.csv", row.names = 1)
+
+head(Bad_response_Post_DMR)
+```
+
+## Specific Bad response DMR
+
+```{r}
+Bad_response_Post_DMR <- read.csv("Results_DMR/Specific_Bad_response_Post.csv", row.names = 1)
+
+head(Bad_response_Post_DMR)
+```

@@ -5,8 +5,26 @@ Git des analyses de methylation de l'ADN en fonction du traitement à l'inhibite
 
 [Back to PhD Project](https://alexishucteau.github.io/PhD_project)
 
-# Données de base
+L'idée est de faire 5 groupes :
 
-| Echantillon | Traitement | Reponse | Time point de l'échantillon |
-| ---- | ----- | ----- | -----|
-|
+* Baseline Bon Responder
+* Baseline Mauvais Responder
+* Post Treatment Bon Responder
+* Post Treatment Mauvais Responder
+* CD34+
+
+Et de discriminer les mutations IDH1 et IDH2
+
+Comparer Bon et Mauvais responder at Baseline -> DMR_Response
+
+Comparer Baseline et CD34+ -> DMR IDH
+
+Prendre DMR specific de la réponse
+
+Comparer Bon et Mauvais responder at post treatment -> DMR residuel
+
+Comparer Post et Baseline -> DMR traitement
+
+Prendre (DMR residuel - DMR traitement) union avec response specific DMR
+
+Comparer ces response specific DMR avec les IDH specific DMR des WGBS.
