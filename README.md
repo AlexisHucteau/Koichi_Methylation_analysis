@@ -39,4 +39,10 @@ Comparer ces response specific DMR avec les IDH specific DMR des WGBS.
 | --------- | --------- | --------- | --------- | --------- | --------- | ---------| ---------| --------- |
 | 85 | 39 | 91 | 39 | 33 | 205 | 429 | 2348 | 809 |
 
-Usefull datasets --> Bisulfite-Seq
+--> Bisulfite-Seq
+
+| DNA | RNA |
+|---|---|
+| 74 | 17 |
+
+--> DNA
