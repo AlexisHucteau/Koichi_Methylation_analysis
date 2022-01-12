@@ -5,6 +5,8 @@ Git des analyses de methylation de l'ADN en fonction du traitement à l'inhibite
 
 [Back to PhD Project](https://alexishucteau.github.io/PhD_project)
 
+# Koichi Patients analysis
+
 L'idée est de faire 5 groupes :
 
 * Baseline Bon Responder
@@ -28,3 +30,13 @@ Comparer Post et Baseline -> DMR traitement
 Prendre (DMR residuel - DMR traitement) union avec response specific DMR
 
 Comparer ces response specific DMR avec les IDH specific DMR des WGBS.
+
+# Wilson WGBS analysis
+
+4078 datafiles
+
+| AMPLICON | ATAC-seq | Bisulfite-Seq | ChiP-Seq | OTHER | RNA-Seq | Targeted-Capture | WGS | WXS |
+| --------- | --------- | --------- | --------- | --------- | --------- | ---------| ---------| --------- |
+| 85 | 39 | 91 | 39 | 33 | 205 | 429 | 2348 | 809 |
+
+Usefull datasets --> Bisulfite-Seq

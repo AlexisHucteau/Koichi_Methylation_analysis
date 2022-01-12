@@ -233,4 +233,41 @@ DMR_Baseline_vs_Post_treatment <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(B
 write.csv(DMR_Baseline_vs_Post_treatment$BumphunterDMR, "../Results_DMR/DMR_Baseline_vs_Post_treatment.csv")
 
 
+############ Wilson DMR WGBS analysis 
 
+IDH1_DMR_WGBS <- read.csv("WGBS_Wilson_Tables/IDH1_DMR_WGBS.csv")
+IDH2_DMR_WGBS <- read.csv("WGBS_Wilson_Tables/IDH2_DMR_WGBS.csv")
+
+DMR_specific_response_GRanges <- GRanges(
+  seqnames = Specific_Bad_response$chrom,
+  ranges = IRanges(start = Specific_Bad_response$chromStart, end = Specific_Bad_response$chromEnd),
+  DMR_number = rownames(Specific_Bad_response)
+)
+  
+IDH1_DMR_WGBS_GRanges <- GRanges(
+  seqnames = IDH1_DMR_WGBS$seqnames,
+  ranges = IRanges(start = IDH1_DMR_WGBS$start, end = IDH1_DMR_WGBS$end),
+  DMR_number = rownames(IDH1_DMR_WGBS)
+)
+
+IDH2_DMR_WGBS_GRanges <- GRanges(
+  seqnames = IDH2_DMR_WGBS$seqnames,
+  ranges = IRanges(start = IDH2_DMR_WGBS$start, end = IDH2_DMR_WGBS$end),
+  DMR_number = rownames(IDH2_DMR_WGBS)
+)
+
+A <- IDH1_DMR_WGBS_GRanges
+B <- DMR_BR_C
+
+C <- findOverlaps(A, B)
+overlaps_Baseline_Response_IDH1_df <- data.frame(mcols(A[queryHits(C),]), 
+                                                 data.frame(mcols(B[subjectHits(C),])))
+
+A <- DMR_BR_C
+B <- IDH2_DMR_WGBS_GRanges
+
+C <- findOverlaps(A, B)
+overlaps_Baseline_Response_IDH2_df <- data.frame(mcols(A[queryHits(C),]), 
+                                                 data.frame(mcols(B[subjectHits(C),])))
+
+Specific_Bad_response_Baseline_IDH1 <- Specific_Bad_response[rownames(Specific_Bad_response) %in% overlaps_GP_BP_df$DMR_name.1,]
