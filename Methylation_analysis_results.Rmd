@@ -40,7 +40,7 @@ head(DMR_BR_C)
 ## Specific Bad response DMR
 
 ```{r}
-Bad_response_Baseline_DMR <- read.csv("Results_DMR/Specific_Bad_response.csv", row.names = 1)
+Bad_response_Baseline_DMR <- read.csv("Results_DMR/Specific_Bad_response.csv", sep = "\t")
 
 head(Bad_response_Baseline_DMR)
 ```
@@ -70,4 +70,3 @@ Bad_response_Post_DMR <- read.csv("Results_DMR/Specific_Bad_response_Post.csv", 
 
 head(Bad_response_Post_DMR)
 ```
-

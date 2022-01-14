@@ -13,18 +13,18 @@ setwd("~/GitHub/Koichi_Methylation_analysis/Scripts/")
 #                        "B" = samples[seq(from = 2, to = 633, by = 3)],
 #                        "C" = samples[seq(from = 3, to = 633, by = 3)]) %>%
 #   unique()
-# 
+#
 # write.csv(Samples2, "/media/alexis/DATA/Koichi_methylation_dat/IDAT_files/Samples2.csv")
 
 pheno <- read.csv("/media/alexis/DATA/Koichi_methylation_dat/samplesheet.csv")
 
 # DATA_loaded <- champ.load("/media/alexis/DATA/Koichi_methylation_dat/IDAT_files/", arraytype = "EPIC")
 
-# 
+#
 # DATA_loaded$pd <- merge(DATA_loaded$pd, pheno, by.x = "Sample_Name", by.y = "Sample")
-# 
+#
 # champ.QC(beta = DATA_loaded$beta, pheno = DATA_loaded$pd$Pheno)
-# 
+#
 # BMIQ_norm_Koichi_samples <- champ.norm(DATA_loaded$beta, resultsDir = "./BMIQ_Normalization/", arraytype = "EPIC", cores = 8, method = "BMIQ")
 # saveRDS(BMIQ_norm_Koichi_samples, "/media/alexis/DATA/Koichi_methylation_dat/BMIQ_norm_Koichi_samples.Rdata")
 BMIQ_norm_Koichi_samples <- readRDS("/media/alexis/DATA/Koichi_methylation_dat/BMIQ_norm_Koichi_samples.Rdata")
@@ -71,7 +71,7 @@ Good_baseline_Control <- c(intersect(Good_responder_Sample, Baseline_Sample), Co
 Factor_Good_Baseline_Control <- colnames(BMIQ_norm_Koichi_samples)[colnames(BMIQ_norm_Koichi_samples) %in% Good_baseline_Control]
 Factor_Good_Baseline_Control <- ifelse(Factor_Good_Baseline_Control %in% Good_responder_Sample, "Good_Responder_Baseline", "Control")
 
-DMR_Good_Baseline_vs_Control <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Good_baseline_Control], 
+DMR_Good_Baseline_vs_Control <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Good_baseline_Control],
                                       pheno = Factor_Good_Baseline_Control,
                                       cores = 6,
                                       arraytype = "EPIC")
@@ -84,7 +84,7 @@ Bad_baseline_Control <- c(intersect(Bad_responder_Sample, Baseline_Sample), Cont
 Factor_Bad_Baseline_Control <- colnames(BMIQ_norm_Koichi_samples)[colnames(BMIQ_norm_Koichi_samples) %in% Bad_baseline_Control]
 Factor_Bad_Baseline_Control <- ifelse(Factor_Bad_Baseline_Control %in% Bad_responder_Sample, "Bad_Responder_Baseline", "Control")
 
-DMR_Bad_Baseline_vs_Control <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Bad_baseline_Control], 
+DMR_Bad_Baseline_vs_Control <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Bad_baseline_Control],
                                           pheno = Factor_Bad_Baseline_Control,
                                           cores = 6,
                                           arraytype = "EPIC")
@@ -129,7 +129,7 @@ Good_Bad_Baseline_sample <- intersect(c(Good_responder_Sample, Bad_responder_Sam
 Factor_Good_Bad_Baseline <- colnames(BMIQ_norm_Koichi_samples)[colnames(BMIQ_norm_Koichi_samples) %in% Good_Bad_Baseline_sample]
 Factor_Good_Bad_Baseline <- ifelse(Factor_Good_Bad_Baseline %in% Good_responder_Sample, "Good_Responder", "Bad_Responder")
 
-DMR_Good_vs_Bad_Baseline <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Good_Bad_Baseline_sample], 
+DMR_Good_vs_Bad_Baseline <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Good_Bad_Baseline_sample],
                                       pheno = Factor_Good_Bad_Baseline,
                                       cores = 6,
                                       arraytype = "EPIC")
@@ -142,7 +142,7 @@ Baseline_Control_sample <- c(Baseline_Sample, Control_Sample)
 Factor_Baseline_Control <- colnames(BMIQ_norm_Koichi_samples)[colnames(BMIQ_norm_Koichi_samples) %in% Baseline_Control_sample]
 Factor_Baseline_Control <- ifelse(Factor_Baseline_Control %in% Baseline_Sample, "Baseline", "Control")
 
-DMR_Baseline_vs_Control <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Baseline_Control_sample], 
+DMR_Baseline_vs_Control <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Baseline_Control_sample],
                                      pheno = Factor_Baseline_Control,
                                      cores = 6,
                                      arraytype = "EPIC")
@@ -155,7 +155,7 @@ Good_Post_Control_sample <- c(intersect(Good_responder_Sample, Post_response_Sam
 Factor_Good_Post_Control <- colnames(BMIQ_norm_Koichi_samples)[colnames(BMIQ_norm_Koichi_samples) %in% Good_Post_Control_sample]
 Factor_Good_Post_Control <- ifelse(Factor_Good_Post_Control %in% Good_responder_Sample, "Good_Responder_Post", "Control")
 
-DMR_Good_Post_vs_Control <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Good_Post_Control_sample], 
+DMR_Good_Post_vs_Control <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Good_Post_Control_sample],
                                           pheno = Factor_Good_Post_Control,
                                           cores = 6,
                                           arraytype = "EPIC")
@@ -168,7 +168,7 @@ Bad_Post_Control <- c(intersect(Bad_responder_Sample, Post_response_Sample), Con
 Factor_Bad_Post_Control <- colnames(BMIQ_norm_Koichi_samples)[colnames(BMIQ_norm_Koichi_samples) %in% Bad_Post_Control]
 Factor_Bad_Post_Control <- ifelse(Factor_Bad_Post_Control %in% Bad_responder_Sample, "Bad_Responder_Post", "Control")
 
-DMR_Bad_Post_vs_Control <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Bad_Post_Control], 
+DMR_Bad_Post_vs_Control <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Bad_Post_Control],
                                          pheno = Factor_Bad_Post_Control,
                                          cores = 6,
                                          arraytype = "EPIC")
@@ -212,7 +212,7 @@ Good_Bad_Post_sample <- intersect(c(Good_responder_Sample, Bad_responder_Sample)
 Factor_Good_Bad_Post_treatment <- colnames(BMIQ_norm_Koichi_samples)[colnames(BMIQ_norm_Koichi_samples) %in% Good_Bad_Post_sample]
 Factor_Good_Bad_Post_treatment <- ifelse(Factor_Good_Bad_Post_treatment %in% Good_responder_Sample, "Good_Responder", "Bad_Responder")
 
-DMR_Good_vs_Bad_Post_treatment <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Good_Bad_Post_sample], 
+DMR_Good_vs_Bad_Post_treatment <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Good_Bad_Post_sample],
                                       pheno = Factor_Good_Bad_Post_treatment,
                                       cores = 6,
                                       arraytype = "EPIC")
@@ -225,7 +225,7 @@ Baseline_Post_sample <- c(Baseline_Sample, Post_response_Sample)
 Factor_Baseline_Post_treatment <- colnames(BMIQ_norm_Koichi_samples)[colnames(BMIQ_norm_Koichi_samples) %in% Baseline_Post_sample]
 Factor_Baseline_Post_treatment <- ifelse(Factor_Baseline_Post_treatment %in% Baseline_Sample, "Baseline", "Post_response")
 
-DMR_Baseline_vs_Post_treatment <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Baseline_Post_sample], 
+DMR_Baseline_vs_Post_treatment <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Baseline_Post_sample],
                                             pheno = Factor_Baseline_Post_treatment,
                                             cores = 6,
                                             arraytype = "EPIC")
@@ -233,7 +233,7 @@ DMR_Baseline_vs_Post_treatment <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(B
 write.csv(DMR_Baseline_vs_Post_treatment$BumphunterDMR, "../Results_DMR/DMR_Baseline_vs_Post_treatment.csv")
 
 
-############ Wilson DMR WGBS analysis 
+############ Wilson DMR WGBS analysis
 
 IDH1_DMR_WGBS <- read.csv("WGBS_Wilson_Tables/IDH1_DMR_WGBS.csv")
 IDH2_DMR_WGBS <- read.csv("WGBS_Wilson_Tables/IDH2_DMR_WGBS.csv")
@@ -243,7 +243,7 @@ DMR_specific_response_GRanges <- GRanges(
   ranges = IRanges(start = Specific_Bad_response$chromStart, end = Specific_Bad_response$chromEnd),
   DMR_number = rownames(Specific_Bad_response)
 )
-  
+
 IDH1_DMR_WGBS_GRanges <- GRanges(
   seqnames = IDH1_DMR_WGBS$seqnames,
   ranges = IRanges(start = IDH1_DMR_WGBS$start, end = IDH1_DMR_WGBS$end),
@@ -260,14 +260,23 @@ A <- IDH1_DMR_WGBS_GRanges
 B <- DMR_BR_C
 
 C <- findOverlaps(A, B)
-overlaps_Baseline_Response_IDH1_df <- data.frame(mcols(A[queryHits(C),]), 
+overlaps_Baseline_Response_IDH1_df <- data.frame(mcols(A[queryHits(C),]),
                                                  data.frame(mcols(B[subjectHits(C),])))
 
 A <- DMR_BR_C
 B <- IDH2_DMR_WGBS_GRanges
 
 C <- findOverlaps(A, B)
-overlaps_Baseline_Response_IDH2_df <- data.frame(mcols(A[queryHits(C),]), 
+overlaps_Baseline_Response_IDH2_df <- data.frame(mcols(A[queryHits(C),]),
                                                  data.frame(mcols(B[subjectHits(C),])))
 
 Specific_Bad_response_Baseline_IDH1 <- Specific_Bad_response[rownames(Specific_Bad_response) %in% overlaps_GP_BP_df$DMR_name.1,]
+
+############ Pchic integration
+
+load("../../../PCHIC/pchic.RData")
+
+
+
+PCHIC_GRanges <- GRanges(
+  seqnames = )
