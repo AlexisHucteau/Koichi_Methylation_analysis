@@ -72,9 +72,9 @@ Factor_Good_Baseline_Control <- colnames(BMIQ_norm_Koichi_samples)[colnames(BMIQ
 Factor_Good_Baseline_Control <- ifelse(Factor_Good_Baseline_Control %in% Good_responder_Sample, "Good_Responder_Baseline", "Control")
 
 DMR_Good_Baseline_vs_Control <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Good_baseline_Control],
-                                      pheno = Factor_Good_Baseline_Control,
-                                      cores = 6,
-                                      arraytype = "EPIC")
+                                          pheno = Factor_Good_Baseline_Control,
+                                          cores = 6,
+                                          arraytype = "EPIC")
 
 write.csv(DMR_Good_Baseline_vs_Control$BumphunterDMR, "../Results_DMR/DMR_Good_Baseline_vs_Control.csv")
 
@@ -85,9 +85,9 @@ Factor_Bad_Baseline_Control <- colnames(BMIQ_norm_Koichi_samples)[colnames(BMIQ_
 Factor_Bad_Baseline_Control <- ifelse(Factor_Bad_Baseline_Control %in% Bad_responder_Sample, "Bad_Responder_Baseline", "Control")
 
 DMR_Bad_Baseline_vs_Control <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Bad_baseline_Control],
-                                          pheno = Factor_Bad_Baseline_Control,
-                                          cores = 6,
-                                          arraytype = "EPIC")
+                                         pheno = Factor_Bad_Baseline_Control,
+                                         cores = 6,
+                                         arraytype = "EPIC")
 
 write.csv(DMR_Bad_Baseline_vs_Control$BumphunterDMR, "../Results_DMR/DMR_Bad_Baseline_vs_Control.csv")
 
@@ -156,9 +156,9 @@ Factor_Good_Post_Control <- colnames(BMIQ_norm_Koichi_samples)[colnames(BMIQ_nor
 Factor_Good_Post_Control <- ifelse(Factor_Good_Post_Control %in% Good_responder_Sample, "Good_Responder_Post", "Control")
 
 DMR_Good_Post_vs_Control <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Good_Post_Control_sample],
-                                          pheno = Factor_Good_Post_Control,
-                                          cores = 6,
-                                          arraytype = "EPIC")
+                                      pheno = Factor_Good_Post_Control,
+                                      cores = 6,
+                                      arraytype = "EPIC")
 
 write.csv(DMR_Good_Post_vs_Control$BumphunterDMR, "../Results_DMR/DMR_Good_Post_vs_Control.csv")
 
@@ -169,9 +169,9 @@ Factor_Bad_Post_Control <- colnames(BMIQ_norm_Koichi_samples)[colnames(BMIQ_norm
 Factor_Bad_Post_Control <- ifelse(Factor_Bad_Post_Control %in% Bad_responder_Sample, "Bad_Responder_Post", "Control")
 
 DMR_Bad_Post_vs_Control <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Bad_Post_Control],
-                                         pheno = Factor_Bad_Post_Control,
-                                         cores = 6,
-                                         arraytype = "EPIC")
+                                     pheno = Factor_Bad_Post_Control,
+                                     cores = 6,
+                                     arraytype = "EPIC")
 
 write.csv(DMR_Bad_Post_vs_Control$BumphunterDMR, "../Results_DMR/DMR_Bad_Post_vs_Control.csv")
 
@@ -213,9 +213,9 @@ Factor_Good_Bad_Post_treatment <- colnames(BMIQ_norm_Koichi_samples)[colnames(BM
 Factor_Good_Bad_Post_treatment <- ifelse(Factor_Good_Bad_Post_treatment %in% Good_responder_Sample, "Good_Responder", "Bad_Responder")
 
 DMR_Good_vs_Bad_Post_treatment <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(BMIQ_norm_Koichi_samples) %in% Good_Bad_Post_sample],
-                                      pheno = Factor_Good_Bad_Post_treatment,
-                                      cores = 6,
-                                      arraytype = "EPIC")
+                                            pheno = Factor_Good_Bad_Post_treatment,
+                                            cores = 6,
+                                            arraytype = "EPIC")
 
 write.csv(DMR_Good_vs_Bad_Post_treatment$BumphunterDMR, "../Results_DMR/DMR_Good_vs_Bad_Post_treatment.csv")
 
@@ -232,11 +232,10 @@ DMR_Baseline_vs_Post_treatment <- champ.DMR(BMIQ_norm_Koichi_samples[,colnames(B
 
 write.csv(DMR_Baseline_vs_Post_treatment$BumphunterDMR, "../Results_DMR/DMR_Baseline_vs_Post_treatment.csv")
 
-
 ############ Wilson DMR WGBS analysis
 
-IDH1_DMR_WGBS <- read.csv("WGBS_Wilson_Tables/IDH1_DMR_WGBS.csv")
-IDH2_DMR_WGBS <- read.csv("WGBS_Wilson_Tables/IDH2_DMR_WGBS.csv")
+IDH1_DMR_WGBS <- read.csv("../WGBS_Wilson_Tables/IDH1_DMR_WGBS.csv")
+IDH2_DMR_WGBS <- read.csv("../WGBS_Wilson_Tables/IDH2_DMR_WGBS.csv")
 
 DMR_specific_response_GRanges <- GRanges(
   seqnames = Specific_Bad_response$chrom,
@@ -272,11 +271,122 @@ overlaps_Baseline_Response_IDH2_df <- data.frame(mcols(A[queryHits(C),]),
 
 Specific_Bad_response_Baseline_IDH1 <- Specific_Bad_response[rownames(Specific_Bad_response) %in% overlaps_GP_BP_df$DMR_name.1,]
 
-############ Pchic integration
+############ Change Threshold of DMR analysis
 
-load("../../../PCHIC/pchic.RData")
+DMR_analysis_threshold <- function(DATA, 
+                                   Samples,
+                                   Pheno_A_samples, 
+                                   Pheno_name_A, 
+                                   Pheno_name_B, 
+                                   adjPvalDmr_param = 0.05, 
+                                   DMR_gap_param = 300, 
+                                   minProbes_param = 7, 
+                                   file_name_addition = ""){
+  Factor <- colnames(DATA)[colnames(DATA) %in% Samples]
+  Factor <- ifelse(Factor %in% Pheno_A_samples, "Pheno_name_A", "Pheno_name_B")
+  
+  DMR <- champ.DMR(DATA[,colnames(DATA) %in% Samples], 
+                   adjPvalDmr = adjPvalDmr_param, 
+                   maxGap = DMR_gap_param, 
+                   minProbes = minProbes_param, 
+                   pheno = Factor,
+                   cores = 7,
+                   arraytype = "EPIC")
+  
+  write.csv(DMR$BumphunterDMR, paste0("../Results_DMR/DMR_", Pheno_name_A, "_vs_", Pheno_name_B, file_name_addition, ".csv"))
+  
+  return(DMR)
+}
+
+
+DMR_Bad_Baseline_vs_Control_adjPval_0.1 <- DMR_analysis_threshold(DATA = BMIQ_norm_Koichi_samples, 
+                                                                  Samples = Baseline_Control_sample, 
+                                                                  Pheno_A_samples = Bad_responder_Sample, 
+                                                                  Pheno_name_A = "Bad responder", 
+                                                                  Pheno_name_B = "Control", 
+                                                                  adjPvalDmr_param = 0.1, 
+                                                                  file_name_addition = "_adjPval_0.1")
+
+
+DMR_Bad_Baseline_vs_Control_gap_3000 <- DMR_analysis_threshold(DATA = BMIQ_norm_Koichi_samples, 
+                                                               Samples = Baseline_Control_sample, 
+                                                               Pheno_A_samples = Bad_responder_Sample, 
+                                                               Pheno_name_A = "Bad responder", 
+                                                               Pheno_name_B = "Control",  
+                                                               DMR_gap_param = 3000,
+                                                               file_name_addition = "_gap_3000")
+
+
+############ Change overlap parameters
+
+DMR_BR_C <- read.csv("../Results_DMR/DMR_Bad_Baseline_vs_Control.csv")
+DMR_BR_C_GRanges <- GRanges(
+  seqnames = DMR_BR_C$seqnames,
+  ranges = IRanges(start = DMR_BR_C$start, end = DMR_BR_C$end),
+  DMR_name = rownames(DMR_BR_C),
+  chr = DMR_BR_C$seqnames,
+  start_chr = DMR_BR_C$start,
+  end_chr = DMR_BR_C$end,
+  pvalue = DMR_BR_C$p.value
+)
+
+Specific_Bad_response_GRanges <- GRanges(
+  seqnames = Specific_Bad_response$seqnames,
+  ranges = IRanges(start = Specific_Bad_response$start, end = Specific_Bad_response$end),
+  DMR_name = rownames(Specific_Bad_response),
+  chr = Specific_Bad_response$seqnames,
+  start_chr = Specific_Bad_response$start,
+  end_chr = Specific_Bad_response$end,
+  pvalue = Specific_Bad_response$p.value
+)
+
+
+A <- IDH1_DMR_WGBS_GRanges
+B <- Specific_Bad_response_GRanges
+
+# maxgap	
+# A single integer >= -1.
+# If type is set to "any", maxgap is interpreted as the maximum gap that is allowed between 2 ranges for the ranges to be considered as overlapping. The gap between 2 ranges is the number of positions that separate them. The gap between 2 adjacent ranges is 0. By convention when one range has its start or end strictly inside the other (i.e. non-disjoint ranges), the gap is considered to be -1.
+# If type is set to anything else, maxgap has a special meaning that depends on the particular type. See type below for more information.
+
+
+for(i in seq(from = 0, to = 1000, by = 50)){
+  C <- findOverlaps(A, B, maxgap = i)
+  overlaps_ <- data.frame(mcols(A[queryHits(C),]),data.frame(mcols(B[subjectHits(C),])))
+  message(paste0("number of overlap for gap: ", i, "\n", nrow(overlaps_)))
+}
+
+C <- findOverlaps(A, B, maxgap = 100)
+overlaps_ <- data.frame(mcols(A[queryHits(C),]),data.frame(mcols(B[subjectHits(C),])))
+
+A <- DMR_BR_C
+B <- IDH2_DMR_WGBS_GRanges
+
+C <- findOverlaps(A, B)
+overlaps_Baseline_Response_IDH2_df <- data.frame(mcols(A[queryHits(C),]),
+                                                 data.frame(mcols(B[subjectHits(C),])))
+
+Specific_Bad_response_Baseline_IDH1 <- Specific_Bad_response[rownames(Specific_Bad_response) %in% overlaps_GP_BP_df$DMR_name.1,]
 
 
 
-PCHIC_GRanges <- GRanges(
-  seqnames = )
+
+############ Associate genes to DMRs
+
+
+
+
+
+
+
+############ Analyse IDH1 & IDH2 separately
+
+
+
+
+
+
+
+
+
+############ Investigate DMRs location and compare to their DMR WGBS

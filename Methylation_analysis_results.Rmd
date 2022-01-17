@@ -70,3 +70,15 @@ Bad_response_Post_DMR <- read.csv("Results_DMR/Specific_Bad_response_Post.csv", 
 
 head(Bad_response_Post_DMR)
 ```
+
+
+## Testing parameters for DMR
+
+| Parameter changed | Value defaut parameter | New value of parameter | Number of DMRs | overlap |
+| -------- | --------| --------| --------| -------- |
+| None | NA | NA | 131 | 0 |
+| adjPval | 0.05 | 0.1 | 731 | |
+| max Gap | 0 | 3000 | 842 | | |
+| minProbes_param | 7 | 5 | | | | 
+
+
