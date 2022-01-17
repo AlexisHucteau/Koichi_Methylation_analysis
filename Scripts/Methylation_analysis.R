@@ -4,6 +4,15 @@ library(GenomicRanges)
 
 "%ni%" <- Negate("%in%")
 
+############ Functions
+
+overlapping <- function(GRanges_A, GRanges_B, gap = -1){
+  OverL <- findOverlaps(GRanges_A, GRanges_B, maxgap = gap)
+  data.frame(mcols(GRanges_A[queryHits(OverL),]),
+                         data.frame(mcols(GRanges_B[subjectHits(OverL),])))
+}
+
+
 setwd("~/GitHub/Koichi_Methylation_analysis/Scripts/")
 
 # samples <- list.files("/media/alexis/DATA/Koichi_methylation_dat/IDAT_files/") %>% stringr::str_split(., pattern = "_") %>% sapply(function(x){x[1:3]})
@@ -116,8 +125,7 @@ DMR_Bad_Baseline_vs_Control_GRanges <- GRanges(
   pvalue = DMR_Bad_Baseline_vs_Control$BumphunterDMR$p.value
 )
 
-overlaps_GC_BC <- findOverlaps(DMR_Good_Baseline_vs_Control_GRanges, DMR_Bad_Baseline_vs_Control_GRanges)
-overlaps_GC_BC_df <- data.frame(mcols(DMR_Good_Baseline_vs_Control_GRanges[queryHits(overlaps_GC_BC),]), data.frame(mcols(DMR_Bad_Baseline_vs_Control_GRanges[subjectHits(overlaps_GC_BC),])))
+overlaps_GC_BC_df <- overlapping(DMR_Good_Baseline_vs_Control_GRanges, DMR_Bad_Baseline_vs_Control_GRanges)
 
 Specific_Bad_response <- DMR_Bad_Baseline_vs_Control$BumphunterDMR[rownames(DMR_Bad_Baseline_vs_Control$BumphunterDMR) %ni% overlaps_GC_BC_df$DMR_name.1,]
 
@@ -199,9 +207,7 @@ DMR_Bad_Post_vs_Control_GRanges <- GRanges(
   pvalue = DMR_Bad_Post_vs_Control$BumphunterDMR$p.value
 )
 
-overlaps_GP_BP <- findOverlaps(DMR_Good_Post_vs_Control_GRanges, DMR_Bad_Post_vs_Control_GRanges)
-overlaps_GP_BP_df <- data.frame(mcols(DMR_Good_Post_vs_Control_GRanges[queryHits(overlaps_GP_BP),]), data.frame(mcols(DMR_Bad_Post_vs_Control_GRanges[subjectHits(overlaps_GP_BP),])))
-
+overlaps_GP_BP_df <- overlapping(DMR_Good_Post_vs_Control_GRanges, DMR_Bad_Post_vs_Control_GRanges)
 Specific_Bad_response_Post <- DMR_Good_Post_vs_Control$BumphunterDMR[rownames(DMR_Good_Post_vs_Control$BumphunterDMR) %ni% overlaps_GP_BP_df$DMR_name.1,]
 
 write.csv(Specific_Bad_response_Post, "../Results_DMR/Specific_Bad_response_Post.csv")
@@ -255,21 +261,16 @@ IDH2_DMR_WGBS_GRanges <- GRanges(
   DMR_number = rownames(IDH2_DMR_WGBS)
 )
 
-A <- IDH1_DMR_WGBS_GRanges
-B <- DMR_BR_C
+overlaps_Baseline_Bad_Response_IDH1_df <- overlapping(IDH1_DMR_WGBS_GRanges, DMR_BR_C_GRanges, gap = 100)
 
-C <- findOverlaps(A, B)
-overlaps_Baseline_Response_IDH1_df <- data.frame(mcols(A[queryHits(C),]),
-                                                 data.frame(mcols(B[subjectHits(C),])))
+overlaps_Baseline_Bad_Response_IDH2_df <- overlapping(IDH2_DMR_WGBS_GRanges, DMR_BR_C_GRanges, gap = 100)
 
-A <- DMR_BR_C
-B <- IDH2_DMR_WGBS_GRanges
+overlaps_Baseline_Good_Response_IDH1_df <- overlapping(IDH1_DMR_WGBS_GRanges, DMR_Good_Baseline_vs_Control_GRanges)
 
-C <- findOverlaps(A, B)
-overlaps_Baseline_Response_IDH2_df <- data.frame(mcols(A[queryHits(C),]),
-                                                 data.frame(mcols(B[subjectHits(C),])))
+overlaps_Baseline_Good_Response_IDH2_df <- overlapping(IDH2_DMR_WGBS_GRanges, DMR_Good_Baseline_vs_Control_GRanges)
 
-Specific_Bad_response_Baseline_IDH1 <- Specific_Bad_response[rownames(Specific_Bad_response) %in% overlaps_GP_BP_df$DMR_name.1,]
+
+Specific_Bad_response_Baseline_IDH1 <- Specific_Bad_response[rownames(Specific_Bad_response) %in% overlaps_Baseline_Response_IDH1_df$DMR_name,]
 
 ############ Change Threshold of DMR analysis
 
@@ -350,28 +351,19 @@ B <- Specific_Bad_response_GRanges
 
 
 for(i in seq(from = 0, to = 1000, by = 50)){
-  C <- findOverlaps(A, B, maxgap = i)
-  overlaps_ <- data.frame(mcols(A[queryHits(C),]),data.frame(mcols(B[subjectHits(C),])))
+  overlaps_ <- overlapping(IDH1_DMR_WGBS_GRanges, Specific_Bad_response_GRanges, gap = i)
   message(paste0("number of overlap for gap: ", i, "\n", nrow(overlaps_)))
 }
 
-C <- findOverlaps(A, B, maxgap = 100)
-overlaps_ <- data.frame(mcols(A[queryHits(C),]),data.frame(mcols(B[subjectHits(C),])))
+overlaps_specific_bad_response_IDH1 <- overlapping(IDH1_DMR_WGBS_GRanges, Specific_Bad_response_GRanges, gap = 100)
+overlaps_specific_bad_response_IDH2 <- overlapping(IDH2_DMR_WGBS_GRanges, Specific_Bad_response_GRanges, gap = 100)
 
-A <- DMR_BR_C
-B <- IDH2_DMR_WGBS_GRanges
-
-C <- findOverlaps(A, B)
-overlaps_Baseline_Response_IDH2_df <- data.frame(mcols(A[queryHits(C),]),
-                                                 data.frame(mcols(B[subjectHits(C),])))
+overlaps_Baseline_Response_IDH2_df <- overlapping(DMR_BR_C_GRanges, IDH2_DMR_WGBS_GRanges)
 
 Specific_Bad_response_Baseline_IDH1 <- Specific_Bad_response[rownames(Specific_Bad_response) %in% overlaps_GP_BP_df$DMR_name.1,]
 
 
-
-
 ############ Associate genes to DMRs
-
 
 prepare_pchic <- function(cell_lines = "all", minimum_interaction = 5){
   load("~/PCHIC/pchic.RData")
@@ -387,7 +379,86 @@ pchic <- prepare_pchic(cell_lines = c("Mon", "Mac1", "Mac0", "Mac2", "MK", "Ery"
 
 pchic_bed <- unique(rbind(pchic[, c(1:3, 5)], pchic[, c(6:8, 10)]))
 
+pchic_GRanges <- GRanges(seqnames = paste0("chr", pchic_bed$chr), 
+                         ranges = IRanges(start = pchic_bed$start, end = pchic_bed$end), 
+                         Gene_name = pchic_bed$Name)
 
+pchic_WGBS_IDH1_overlap <- overlapping(IDH1_DMR_WGBS_GRanges, pchic_GRanges) %>%
+  dplyr::filter(Gene_name != ".")
+
+IDH1_DMR_WGBS_pchic <- IDH1_DMR_WGBS[pchic_WGBS_IDH1_overlap$DMR_number,]
+IDH1_DMR_WGBS_pchic$Gene_name <- pchic_WGBS_IDH1_overlap$Gene_name
+
+pchic_WGBS_IDH2_overlap <- overlapping(IDH2_DMR_WGBS_GRanges, pchic_GRanges) %>%
+  dplyr::filter(Gene_name != ".")
+
+IDH2_DMR_WGBS_pchic <- IDH2_DMR_WGBS[pchic_WGBS_IDH2_overlap$DMR_number,]
+IDH2_DMR_WGBS_pchic$Gene_name <- pchic_WGBS_IDH2_overlap$Gene_name
+  
+DMR_Bad_Baseline_vs_pchic_overlap <- overlapping(DMR_Bad_Baseline_vs_Control_GRanges, pchic_GRanges) %>%
+  dplyr::filter(Gene_name != ".")
+
+DMR_Bad_Baseline_vs_Control_annotated <- DMR_Bad_Baseline_vs_Control$BumphunterDMR[DMR_Bad_Baseline_vs_pchic_overlap$DMR_name,]
+DMR_Bad_Baseline_vs_Control_annotated$Gene_name <- DMR_Bad_Baseline_vs_pchic_overlap$Gene_name
+
+DMR_Bad_Baseline_vs_Control_annotated$Gene_name %>% stringr::str_split(pattern = ";") %>% unlist() %>% unique()
+
+DMR_Good_Baseline_vs_pchic_overlap <- overlapping(DMR_Good_Baseline_vs_Control_GRanges, pchic_GRanges) %>%
+  dplyr::filter(Gene_name != ".")
+
+DMR_Good_Baseline_vs_Control_annotated <- DMR_Good_Baseline_vs_Control$BumphunterDMR[DMR_Good_Baseline_vs_pchic_overlap$DMR_name,]
+DMR_Good_Baseline_vs_Control_annotated$Gene_name <- DMR_Good_Baseline_vs_pchic_overlap$Gene_name
+
+DMR_Good_Baseline_vs_Control_annotated$Gene_name %>% stringr::str_split(pattern = ";") %>% unlist() %>% unique()
+
+
+DMR_Good_vs_Bad_Baseline_pchic_overlap <- overlapping(DMR_Good_vs_Bad_Baseline_GRanges, pchic_GRanges)  %>%
+  dplyr::filter(Gene_name != ".")
+
+DMR_Good_vs_Bad_Baseline_annotated <- DMR_Good_vs_Bad_Baseline$BumphunterDMR[DMR_Good_vs_Bad_Baseline_pchic_overlap$DMR_name,]
+DMR_Good_vs_Bad_Baseline_annotated$Gene_name <- DMR_Good_vs_Bad_Baseline_pchic_overlap$Gene_name
+
+DMR_Good_vs_Bad_Baseline_annotated$Gene_name %>% stringr::str_split(pattern = ";") %>% unlist() %>% unique()
+
+Specific_Bad_response_GRanges <- GRanges(
+  seqnames = Specific_Bad_response$seqnames, 
+  ranges = IRanges(start = Specific_Bad_response$start, end = Specific_Bad_response$end),
+  DMR_name = rownames(Specific_Bad_response)
+)
+
+Specific_Bad_response_overlap_pchic <- overlapping(Specific_Bad_response_GRanges, pchic_GRanges) %>% 
+  dplyr::filter(Gene_name != ".")
+
+Specific_Bad_response_annotated <- Specific_Bad_response[Specific_Bad_response_overlap_pchic$DMR_name,]
+Specific_Bad_response_annotated$Gene_name <- Specific_Bad_response_overlap_pchic$Gene_name
+
+Specific_Bad_response_annotated$Gene_name %>% stringr::str_split(pattern = ";") %>% unlist() %>% unique()
+
+DMR_Bad_Post_vs_Control_pchic <- overlapping(DMR_Bad_Post_vs_Control_GRanges, pchic_GRanges) %>%
+  dplyr::filter(Gene_name != ".")
+
+DMR_Bad_Post_vs_Control_annotated <- DMR_Bad_Post_vs_Control$BumphunterDMR[DMR_Bad_Post_vs_Control_pchic$DMR_name,]
+DMR_Bad_Post_vs_Control_annotated$Gene_name <- DMR_Bad_Post_vs_Control_pchic$Gene_name
+
+DMR_Good_Post_vs_Control_pchic <- overlapping(DMR_Good_Post_vs_Control_GRanges, pchic_GRanges) %>%
+  dplyr::filter(Gene_name != ".")
+
+DMR_Good_Post_vs_Control_annotated <- DMR_Good_Post_vs_Control$BumphunterDMR[DMR_Good_Post_vs_Control_pchic$DMR_name,]
+DMR_Good_Post_vs_Control_annotated$Gene_name <- DMR_Good_Post_vs_Control_pchic$Gene_name
+
+Specific_Bad_response_Post_GRanges <-  GRanges(
+  seqnames = Specific_Bad_response_Post$seqnames, 
+  ranges = IRanges(start = Specific_Bad_response_Post$start, end = Specific_Bad_response_Post$end),
+  DMR_name = rownames(Specific_Bad_response_Post)
+)
+
+Specific_Bad_response_Post_overlap_pchic <- overlapping(Specific_Bad_response_Post_GRanges, pchic_GRanges) %>% 
+  dplyr::filter(Gene_name != ".")
+
+Specific_Bad_response_Post_annotated <- Specific_Bad_response_Post[Specific_Bad_response_Post_overlap_pchic$DMR_name,]
+Specific_Bad_response_Post_annotated$Gene_name <- Specific_Bad_response_Post_overlap_pchic$Gene_name
+
+Specific_Bad_response_Post_annotated$Gene_name %>% stringr::str_split(pattern = ";") %>% unlist() %>% unique()
 
 ############ Analyse IDH1 & IDH2 separately
 
