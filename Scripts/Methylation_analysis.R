@@ -298,7 +298,6 @@ DMR_analysis_threshold <- function(DATA,
   return(DMR)
 }
 
-
 DMR_Bad_Baseline_vs_Control_adjPval_0.1 <- DMR_analysis_threshold(DATA = BMIQ_norm_Koichi_samples, 
                                                                   Samples = Baseline_Control_sample, 
                                                                   Pheno_A_samples = Bad_responder_Sample, 
@@ -374,8 +373,19 @@ Specific_Bad_response_Baseline_IDH1 <- Specific_Bad_response[rownames(Specific_B
 ############ Associate genes to DMRs
 
 
+prepare_pchic <- function(cell_lines = "all", minimum_interaction = 5){
+  load("~/PCHIC/pchic.RData")
+  if (length(cell_lines) >= 1){
+    cell_lines = c("Mon", "Mac0", "Mac1", "Mac2", "Neu", "MK", "EP", "Ery", "FoeT", "nCD4", "tCD4", "aCD4", "naCD4", "nCD8", "tCD8", "nB", "tB")
+  }
+  pchic <- data.frame(pchic[rowSums(pchic[,cell_lines] >= minimum_interaction) >= 1, 1:10]) %>% na.omit(.)
+  colnames(pchic)[c(1:5, 6:10)] <- rep(c("chr", "start", "end", "ID", "Name"), 2)
+  return(pchic)
+}
 
+pchic <- prepare_pchic(cell_lines = c("Mon", "Mac1", "Mac0", "Mac2", "MK", "Ery", "EP"))
 
+pchic_bed <- unique(rbind(pchic[, c(1:3, 5)], pchic[, c(6:8, 10)]))
 
 
 
