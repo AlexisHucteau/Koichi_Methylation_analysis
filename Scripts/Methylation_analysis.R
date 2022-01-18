@@ -522,24 +522,4 @@ DMR[["IDH2_DMR_WGBS_Specific_Bad_responder_Post"]] <- DMR[["Specific_Bad_respons
 # -------------------------------------------
 # -------------------------------------------
 
-############ Overlapping Koichi's DMR genes to WGBS DMRs genes
-
-# IDH1_WGBS_Gene_anotation ----> DMR[[]]
-
-DMR[[]]
-######## BASELINE
-
-
-
-
-############ Analyse IDH1 & IDH2 separately
-
-
-
-
-
-
-
-
-
 ############ Investigate DMRs location and compare to their DMR WGBS

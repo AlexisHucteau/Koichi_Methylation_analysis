@@ -12,73 +12,180 @@ editor_options:
     wrap: sentence
 ---
 
-# IDHm +/- Inhibitor & CD34+ Methylation analysis
+# Koichi_Methylation_analysis
+Analysis of DNA methylation through IDHm inhibitor treatment
 
-Analyse des données de méthylation chez les patients atteints de LAM ayant une mutation sur un des gènes IDH et dans des cellules CD34+.
+Git des analyses de methylation de l'ADN en fonction du traitement à l'inhibiteur d'IDHm.
 
-# Baseline analysis
+[Back to PhD Project](https://alexishucteau.github.io/PhD_project)
 
-## DMR Good responder Baseline vs Control
+# Koichi Patients analysis
 
-Régions différentiellement méthylées chez les patients qui répondront au traitement à l'inhibiteur d'IDHm comparé aux cellules CD34+. {#GR-C}
+L'idée est de faire 5 groupes :
+
+* Baseline Bon Responder
+* Baseline Mauvais Responder
+* Post Treatment Bon Responder
+* Post Treatment Mauvais Responder
+* CD34+
+
+Et de discriminer les mutations IDH1 et IDH2
+
+Comparer Bon et Mauvais responder at Baseline -> DMR_Response
+
+Comparer Baseline et CD34+ -> DMR IDH
+
+Prendre DMR specific de la réponse
+
+Comparer Bon et Mauvais responder at post treatment -> DMR residuel
+
+Comparer Post et Baseline -> DMR traitement
+
+Prendre (DMR residuel - DMR traitement) union avec response specific DMR
+
+Comparer ces response specific DMR avec les IDH specific DMR des WGBS.
+
+| Pheno A | Pheno B | Number of DMRs | Number of genes | R object |
+| ----- | -----| -----| ----- | ----- |
+| Bad responder Baseline | Control CD34+ | 131 | 119 | DMR_Bad_Baseline_vs_Control_annotated |
+| Good responder Baseline | Control CD34+ | 197 | 127 | DMR_Good_Baseline_vs_Control_annotated |
+| Bad responder Baseline | Good responder Baseline | 240 | 321 | DMR_Good_vs_Bad_Baseline_annotated |
+| Good Baseline vs Control | Bad Baseline vs Control | 62 | 94 | Specific_Bad_response_annotated |
+| Bad responder Post treatment | Control CD34+ | 235 | 185 | DMR_Bad_Post_vs_Control_annotated |
+| Good responder Post treatment | Control CD34+ | 109 | 68 | DMR_Good_Post_vs_Control_annotated |
+| Good Post vs Control | Bad Post vs Control | 95 | 112 | Specific_Bad_response_post_annotated |
+
+
+# Wilson WGBS analysis
+
+DMR IDH1 vs other AML subtypes
+
+4388 DMRs
+
+DMR IDH2 vs other AML subtypes
+
+2552 DMRs
+
+# Overlap between Wilson WGBS and Illumina EPIC IDHm inhibitor response
+
+| DMR analysis | number of overlap with IDH1 | number of overlap with IDH2  | parameter changed of overlap | number of overlap with IDH1 | number of overlap with IDH2  |
+|---| ---- | ---- |---- | ---- | ----- |
+| IDH1/2_DMR_WGBS_Good_responder_Baseline | 4 | 2 | max gap = 100 | 5 | 3 |
+| IDH1/2_DMR_WGBS_Bad_responder_Baseline | 5 | 2 | max gap = 100 | 5 | 3 |
+| IDH1/2_DMR_WGBS_Specific_Bad_responder_Baseline | 0 | 0 | max gap = 100 | 1 | 1 |
+| IDH1/2_DMR_WGBS_Good_responder_Post | 2 | 1 |
+| IDH1/2_DMR_WGBS_Bad_responder_Post | 2 | 0 |
+| IDH1/2_DMR_WGBS_Specific_Bad_responder_Post | 0 | 0 |
+
+## Analysis between Genes annotation from the two analysis
+
+Resume
+
+| DMR analysis | Number of genes overlapping IDH1 | IDH2 | list of genes IDH1 | IDH2 |
+|---| ---- | ---- |---- | ---- |
+| DMR_Good_Baseline_vs_Control_annotated |
+| DMR_Bad_Baseline_vs_Control_annotated |
+|Specific_Bad_response_annotated |
+| DMR_Bad_Post_vs_Control_annotated |
+| DMR_Good_Post_vs_Control_annotated |
+| Specific_Bad_response_post_annotated |
+
+* Genes having DMR from Good responder to Control and Specific to IDHm
 
 ```{r}
-DMR_GR_C <- read.csv("Results_DMR/DMR_Good_Baseline_vs_Control.csv", row.names = 1)
+A <- intersect(DMR[["IDH1_DMR_WGBS_pchic"]]$Gene_name, DMR[["DMR_Good_Baseline_vs_Control_annotated"]]$Gene_name) %>% 
+  stringr::str_split(pattern = ";") %>% 
+  unlist() %>% 
+  unique()
 
-head(DMR_GR_C)
+B <- intersect(DMR[["IDH2_DMR_WGBS_pchic"]]$Gene_name, DMR[["DMR_Good_Baseline_vs_Control_annotated"]]$Gene_name) %>% 
+  stringr::str_split(pattern = ";") %>% 
+  unlist() %>% 
+  unique()
+
+c(A,B) %>% unique()
 ```
 
-## DMR Bad responder Baseline vs Control
-Régions différentiellement méthylées chez les patients qui ne répondront pas au traitement à l'inhibiteur d'IDHm comparé aux cellules CD34+. {#BR-C}
+* Genes having DMR from Bad responder to Control and Specific to IDHm
 
 ```{r}
-DMR_BR_C <- read.csv("Results_DMR/DMR_Bad_Baseline_vs_Control.csv", row.names = 1)
+A <- intersect(DMR[["IDH1_DMR_WGBS_pchic"]]$Gene_name, DMR[["DMR_Bad_Baseline_vs_Control_annotated"]]$Gene_name) %>% 
+  stringr::str_split(pattern = ";") %>% 
+  unlist() %>% 
+  unique()
 
-head(DMR_BR_C)
+B <- intersect(DMR[["IDH2_DMR_WGBS_pchic"]]$Gene_name, DMR[["DMR_Bad_Baseline_vs_Control_annotated"]]$Gene_name) %>% 
+  stringr::str_split(pattern = ";") %>% 
+  unlist() %>% 
+  unique()
+
+c(A,B) %>% unique()
 ```
 
-## Specific Bad response DMR
+
+* Genes having DMR from Specific Bad responder to Control and Specific to IDHm
 
 ```{r}
-Bad_response_Baseline_DMR <- read.csv("Results_DMR/Specific_Bad_response.csv", sep = "\t")
+A <- intersect(DMR[["IDH1_DMR_WGBS_pchic"]]$Gene_name, DMR[["Specific_Bad_response_annotated"]]$Gene_name) %>% 
+  stringr::str_split(pattern = ";") %>% 
+  unlist() %>% 
+  unique()
 
-head(Bad_response_Baseline_DMR)
+B <- intersect(DMR[["IDH2_DMR_WGBS_pchic"]]$Gene_name, DMR[["Specific_Bad_response_annotated"]]$Gene_name) %>% 
+  stringr::str_split(pattern = ";") %>% 
+  unlist() %>% 
+  unique()
+
+c(A,B) %>% unique()
 ```
 
-# Post Treatment analysis
 
-## DMR Good responder Post treatment vs Control
+* Genes having DMR from Good responder at Post_treatment to Control and Specific to IDHm
 
 ```{r}
-Good_response_Post_DMR <- read.csv("Results_DMR/DMR_Good_Post_vs_Control.csv", row.names = 1)
+A <- intersect(DMR[["IDH1_DMR_WGBS_pchic"]]$Gene_name, DMR[["DMR_Good_Post_vs_Control_annotated"]]$Gene_name) %>% 
+  stringr::str_split(pattern = ";") %>% 
+  unlist() %>% 
+  unique()
 
-head(Good_response_Post_DMR)
+B <- intersect(DMR[["IDH2_DMR_WGBS_pchic"]]$Gene_name, DMR[["DMR_Good_Post_vs_Control_annotated"]]$Gene_name) %>% 
+  stringr::str_split(pattern = ";") %>% 
+  unlist() %>% 
+  unique()
+
+c(A,B) %>% unique()
 ```
 
-## DMR Bad responder Post treatment vs Control
+
+* Genes having DMR from Bad responder at post treatment to Control and Specific to IDHm
 
 ```{r}
-Bad_response_Post_DMR <- read.csv("Results_DMR/DMR_Bad_Post_vs_Control.csv", row.names = 1)
+A <- intersect(DMR[["IDH1_DMR_WGBS_pchic"]]$Gene_name, DMR[["DMR_Bad_Post_vs_Control_annotated"]]$Gene_name) %>% 
+  stringr::str_split(pattern = ";") %>% 
+  unlist() %>% 
+  unique()
 
-head(Bad_response_Post_DMR)
+B <- intersect(DMR[["IDH2_DMR_WGBS_pchic"]]$Gene_name, DMR[["DMR_Bad_Post_vs_Control_annotated"]]$Gene_name) %>% 
+  stringr::str_split(pattern = ";") %>% 
+  unlist() %>% 
+  unique()
+
+c(A,B) %>% unique()
 ```
 
-## Specific Bad response DMR
+
+* Genes having DMR from Specific Bad responder at Post treatment and Specific to IDHm
 
 ```{r}
-Bad_response_Post_DMR <- read.csv("Results_DMR/Specific_Bad_response_Post.csv", row.names = 1)
+A <- intersect(DMR[["IDH1_DMR_WGBS_pchic"]]$Gene_name, DMR[["Specific_Bad_response_Post_annotated"]]$Gene_name) %>% 
+  stringr::str_split(pattern = ";") %>% 
+  unlist() %>% 
+  unique()
 
-head(Bad_response_Post_DMR)
+B <- intersect(DMR[["IDH2_DMR_WGBS_pchic"]]$Gene_name, DMR[["Specific_Bad_response_Post_annotated"]]$Gene_name) %>% 
+  stringr::str_split(pattern = ";") %>% 
+  unlist() %>% 
+  unique()
+
+c(A,B) %>% unique()
 ```
-
-
-## Testing parameters for DMR
-
-| Parameter changed | Value defaut parameter | New value of parameter | Number of DMRs | overlap |
-| -------- | --------| --------| --------| -------- |
-| None | NA | NA | 131 | 0 |
-| adjPval | 0.05 | 0.1 | 731 | |
-| max Gap | 0 | 3000 | 842 | | |
-| minProbes_param | 7 | 5 | | | | 
-
-
