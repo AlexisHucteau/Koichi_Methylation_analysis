@@ -128,6 +128,17 @@ GRanges_list[["DMR_Bad_Baseline_vs_Control_GRanges"]] <- GRanges(
   pvalue = DMR[["DMR_Bad_Baseline_vs_Control"]]$BumphunterDMR$p.value
 )
 
+GRanges_list[["DMR_Bad_vs_Good_Baseline_GRanges"]] <- GRanges(
+  seqnames = DMR[["DMR_Good_vs_Bad_Baseline"]]$BumphunterDMR$seqnames,
+  ranges = IRanges(start = DMR[["DMR_Good_vs_Bad_Baseline"]]$BumphunterDMR$start, end = DMR[["DMR_Good_vs_Bad_Baseline"]]$BumphunterDMR$end),
+  DMR_name = rownames(DMR[["DMR_Good_vs_Bad_Baseline"]]$BumphunterDMR),
+  chr = DMR[["DMR_Good_vs_Bad_Baseline"]]$BumphunterDMR$seqnames,
+  start_chr = DMR[["DMR_Good_vs_Bad_Baseline"]]$BumphunterDMR$start,
+  end_chr = DMR[["DMR_Good_vs_Bad_Baseline"]]$BumphunterDMR$end,
+  pvalue = DMR[["DMR_Good_vs_Bad_Baseline"]]$BumphunterDMR$p.value
+)
+
+
 overlaps <- overlapping(GRanges_list[["DMR_Good_Baseline_vs_Control_GRanges"]], GRanges_list[["DMR_Bad_Baseline_vs_Control_GRanges"]])
 DMR[["Specific_Bad_response"]] <- DMR[["DMR_Bad_Baseline_vs_Control"]]$BumphunterDMR[rownames(DMR[["DMR_Bad_Baseline_vs_Control"]]$BumphunterDMR) %ni% overlaps$DMR_name.1,]
 
@@ -379,7 +390,7 @@ DMR[["DMR_Good_Baseline_vs_Control_annotated"]]$Gene_name %>% stringr::str_split
 
 # -------------------------------------------
 
-overlap <- overlapping(GRanges_list[["DMR_Good_vs_Bad_Baseline_GRanges"]], GRanges_list[["pchic_GRanges"]])  %>%
+overlap <- overlapping(GRanges_list[["DMR_Bad_vs_Good_Baseline_GRanges"]], GRanges_list[["pchic_GRanges"]])  %>%
   dplyr::filter(Gene_name != ".")
 DMR[["DMR_Good_vs_Bad_Baseline_annotated"]] <- DMR[["DMR_Good_vs_Bad_Baseline"]]$BumphunterDMR[overlap$DMR_name,]
 DMR[["DMR_Good_vs_Bad_Baseline_annotated"]]$Gene_name <- overlap$Gene_name
@@ -444,15 +455,79 @@ DMR[["IDH2_DMR_WGBS_pchic"]]$Gene_name <- overlap$Gene_name
 
 ############ Overlapping Koichi's DMR to WGBS DMRs
 
+######## BASELINE
 
 
+overlap <- overlapping(GRanges_list[["DMR_Good_Baseline_vs_Control_GRanges"]], GRanges_list[["IDH1_DMR_WGBS_GRanges"]])
+DMR[["IDH1_DMR_WGBS_Good_responder_Baseline"]] <- DMR[["DMR_Good_Baseline_vs_Control"]]$BumphunterDMR[overlap$DMR_name,]
+
+# -------------------
+
+overlap <- overlapping(GRanges_list[["DMR_Good_Baseline_vs_Control_GRanges"]], GRanges_list[["IDH2_DMR_WGBS_GRanges"]])
+DMR[["IDH2_DMR_WGBS_Good_responder_Baseline"]] <- DMR[["DMR_Good_Baseline_vs_Control"]]$BumphunterDMR[overlap$DMR_name,]
 
 # -------------------------------------------
 
+overlap <- overlapping(GRanges_list[["DMR_Bad_Baseline_vs_Control_GRanges"]], GRanges_list[["IDH1_DMR_WGBS_GRanges"]])
+DMR[["IDH1_DMR_WGBS_Bad_responder_Baseline"]] <- DMR[["DMR_Bad_Baseline_vs_Control"]]$BumphunterDMR[overlap$DMR_name,]
 
+# -------------------
+
+overlap <- overlapping(GRanges_list[["DMR_Bad_Baseline_vs_Control_GRanges"]], GRanges_list[["IDH2_DMR_WGBS_GRanges"]])
+DMR[["IDH2_DMR_WGBS_Bad_responder_Baseline"]] <- DMR[["DMR_Bad_Baseline_vs_Control"]]$BumphunterDMR[overlap$DMR_name,]
 
 # -------------------------------------------
 
+overlap <- overlapping(GRanges_list[["Specific_Bad_response_GRanges"]], GRanges_list[["IDH1_DMR_WGBS_GRanges"]])
+DMR[["IDH1_DMR_WGBS_Specific_Bad_responder_Baseline"]] <- DMR[["Specific_Bad_response"]][overlap$DMR_name,]
+
+# -------------------
+
+overlap <- overlapping(GRanges_list[["Specific_Bad_response_GRanges"]], GRanges_list[["IDH2_DMR_WGBS_GRanges"]])
+DMR[["IDH2_DMR_WGBS_Specific_Bad_responder_Baseline"]] <- DMR[["Specific_Bad_response"]][overlap$DMR_name,]
+
+# -------------------------------------------
+# -------------------------------------------
+
+######## POST TREATMENT
+
+overlap <- overlapping(GRanges_list[["DMR_Good_Post_vs_Control_GRanges"]], GRanges_list[["IDH1_DMR_WGBS_GRanges"]])
+DMR[["IDH1_DMR_WGBS_Good_responder_Post"]] <- DMR[["DMR_Good_Post_vs_Control"]]$BumphunterDMR[overlap$DMR_name,]
+
+# -------------------
+
+overlap <- overlapping(GRanges_list[["DMR_Good_Post_vs_Control_GRanges"]], GRanges_list[["IDH2_DMR_WGBS_GRanges"]])
+DMR[["IDH2_DMR_WGBS_Good_responder_Post"]] <- DMR[["DMR_Good_Post_vs_Control"]]$BumphunterDMR[overlap$DMR_name,]
+
+# -------------------------------------------
+
+overlap <- overlapping(GRanges_list[["DMR_Bad_Post_vs_Control_GRanges"]], GRanges_list[["IDH1_DMR_WGBS_GRanges"]])
+DMR[["IDH1_DMR_WGBS_Bad_responder_Post"]] <- DMR[["DMR_Bad_Post_vs_Control"]]$BumphunterDMR[overlap$DMR_name,]
+
+# -------------------
+
+overlap <- overlapping(GRanges_list[["DMR_Bad_Post_vs_Control_GRanges"]], GRanges_list[["IDH2_DMR_WGBS_GRanges"]])
+DMR[["IDH2_DMR_WGBS_Bad_responder_Post"]] <- DMR[["DMR_Bad_Post_vs_Control"]]$BumphunterDMR[overlap$DMR_name,]
+
+# -------------------------------------------
+
+overlap <- overlapping(GRanges_list[["Specific_Bad_response_Post_GRanges"]], GRanges_list[["IDH1_DMR_WGBS_GRanges"]])
+DMR[["IDH1_DMR_WGBS_Specific_Bad_responder_Post"]] <- DMR[["Specific_Bad_response_Post"]][overlap$DMR_name,]
+
+# -------------------
+
+overlap <- overlapping(GRanges_list[["Specific_Bad_response_Post_GRanges"]], GRanges_list[["IDH2_DMR_WGBS_GRanges"]])
+DMR[["IDH2_DMR_WGBS_Specific_Bad_responder_Post"]] <- DMR[["Specific_Bad_response_Post"]][overlap$DMR_name,]
+
+# -------------------------------------------
+# -------------------------------------------
+
+############ Overlapping Koichi's DMR genes to WGBS DMRs genes
+
+# IDH1_WGBS_Gene_anotation ----> DMR[[]]
+
+DMR[[]]
+######## BASELINE
 
 
 

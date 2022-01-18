@@ -56,8 +56,20 @@ DMR IDH2 vs other AML subtypes
 
 | DMR analysis | number of overlap with IDH1 | number of overlap with IDH2  | parameter changed of overlap | number of overlap with IDH1 | number of overlap with IDH2  |
 |---| ---- | ---- |---- | ---- | ----- |
-| DMR_Bad_Baseline_vs_Control_annotated | 4 | 2 | max gap = 100 | 5 | 3 |
-| DMR_Good_Baseline_vs_Control_annotated | 5 | 2 | max gap = 100 | 5 | 3 |
-| Specific_Bad_response_annotated | 0 | 0 | max gap = 100 | 1 | 1 |
-| DMR_Bad_Posttreatment_vs_Control_annotated | | | |
-|
+| IDH1/2_DMR_WGBS_Good_responder_Baseline | 4 | 2 | max gap = 100 | 5 | 3 |
+| IDH1/2_DMR_WGBS_Bad_responder_Baseline | 5 | 2 | max gap = 100 | 5 | 3 |
+| IDH1/2_DMR_WGBS_Specific_Bad_responder_Baseline | 0 | 0 | max gap = 100 | 1 | 1 |
+| IDH1/2_DMR_WGBS_Good_responder_Post | 2 | 1 |
+| IDH1/2_DMR_WGBS_Bad_responder_Post | 2 | 0 |
+| IDH1/2_DMR_WGBS_Specific_Bad_responder_Post | 0 | 0 |
+
+## Analysis between Genes annotation from the two analysis
+
+| DMR analysis | Number of genes overlapping IDH1 | IDH2 | list of genes IDH1 | IDH2 |
+|---| ---- | ---- |---- | ---- |
+| DMR_Good_Baseline_vs_Control_annotated |
+| DMR_Bad_Baseline_vs_Control_annotated |
+|Specific_Bad_response_annotated |
+| DMR_Bad_Post_vs_Control_annotated |
+| DMR_Good_Post_vs_Control_annotated |
+| Specific_Bad_response_post_annotated |
