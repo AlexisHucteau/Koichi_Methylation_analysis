@@ -58,6 +58,6 @@ DMR IDH2 vs other AML subtypes
 |---| ---- | ---- |---- | ---- | ----- |
 | DMR_Bad_Baseline_vs_Control_annotated | 4 | 2 | max gap = 100 | 5 | 3 |
 | DMR_Good_Baseline_vs_Control_annotated | 5 | 2 | max gap = 100 | 5 | 3 |
-| DMR_Bad_Posttreatment_vs_Control_annotated |
 | Specific_Bad_response_annotated | 0 | 0 | max gap = 100 | 1 | 1 |
+| DMR_Bad_Posttreatment_vs_Control_annotated | | | |
 |
