@@ -1,0 +1,36 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r, include=F}
+library(dplyr)
+"%ni%" <- Negate("%in%")
+
+Specific_Bad_Response <- read.csv("Results_DMR/Specific_Bad_response.csv", sep = "\t")
+load("~/R_data/pchic.RData")
+load("~/R_data/Methylation_Koichi.RData")
+```
+
+
+# Good versus Bad responder Methylation analysis
+
+## DMR on gene promoters
+
+```{r, include = T}
+Gene_Good_bad_DMR_promoter <- DMR$DMR_Good_vs_Bad_Baseline_annotated$Gene_name %>% stringr::str_split(";") %>% unlist() %>% unique()
+```
+
+## DMR connected to gene promoter
+
+```{r}
+DMR$DMR_Good_vs_Bad_Baseline$BumphunterDMR %>% head()
+
+GRanges_list$DMR_Good_vs_Bad_Baseline_GRanges
+
+Chrom_fragment_DMR_good_bad <- overlapping(GRanges_list$DMR_Good_vs_Bad_Baseline_GRanges, GRanges_list$pchic_GRanges)
+
+Gene_Good_bad_DMR_connected_promoter <- rbind(pchic[pchic[,4] %in% Chrom_fragment_DMR_good_bad$ID,c(6:10)], pchic[pchic[,9] %in% Chrom_fragment_DMR_good_bad$ID,c(1:5)])$Name %>% stringr::str_split(";") %>% unlist() %>% unique()
+```
+

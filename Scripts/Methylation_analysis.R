@@ -128,7 +128,7 @@ GRanges_list[["DMR_Bad_Baseline_vs_Control_GRanges"]] <- GRanges(
   pvalue = DMR[["DMR_Bad_Baseline_vs_Control"]]$BumphunterDMR$p.value
 )
 
-GRanges_list[["DMR_Bad_vs_Good_Baseline_GRanges"]] <- GRanges(
+GRanges_list[["DMR_Good_vs_Bad_Baseline_GRanges"]] <- GRanges(
   seqnames = DMR[["DMR_Good_vs_Bad_Baseline"]]$BumphunterDMR$seqnames,
   ranges = IRanges(start = DMR[["DMR_Good_vs_Bad_Baseline"]]$BumphunterDMR$start, end = DMR[["DMR_Good_vs_Bad_Baseline"]]$BumphunterDMR$end),
   DMR_name = rownames(DMR[["DMR_Good_vs_Bad_Baseline"]]$BumphunterDMR),
@@ -356,7 +356,7 @@ for(i in seq(from = 0, to = 1000, by = 50)){
 ############ Associate genes to DMRs
 
 prepare_pchic <- function(cell_lines = "all", minimum_interaction = 5){
-  load("~/PCHIC/pchic.RData")
+  load("~/R_data/pchic.RData")
   if (length(cell_lines) >= 1){
     cell_lines = c("Mon", "Mac0", "Mac1", "Mac2", "Neu", "MK", "EP", "Ery", "FoeT", "nCD4", "tCD4", "aCD4", "naCD4", "nCD8", "tCD8", "nB", "tB")
   }
@@ -365,10 +365,12 @@ prepare_pchic <- function(cell_lines = "all", minimum_interaction = 5){
   return(pchic)
 }
 pchic <- prepare_pchic(cell_lines = c("Mon", "Mac1", "Mac0", "Mac2", "MK", "Ery", "EP"))
-pchic_bed <- unique(rbind(pchic[, c(1:3, 5)], pchic[, c(6:8, 10)]))
+pchic_bed <- unique(rbind(pchic[, c(1:4, 5)], pchic[, c(6:9, 10)]))
 GRanges_list[["pchic_GRanges"]] <- GRanges(seqnames = paste0("chr", pchic_bed$chr), 
                          ranges = IRanges(start = pchic_bed$start, end = pchic_bed$end), 
-                         Gene_name = pchic_bed$Name)
+                         Gene_name = pchic_bed$Name,
+                         ID = pchic_bed$ID
+                         )
 
 # -------------------------------------------
 
@@ -390,7 +392,7 @@ DMR[["DMR_Good_Baseline_vs_Control_annotated"]]$Gene_name %>% stringr::str_split
 
 # -------------------------------------------
 
-overlap <- overlapping(GRanges_list[["DMR_Bad_vs_Good_Baseline_GRanges"]], GRanges_list[["pchic_GRanges"]])  %>%
+overlap <- overlapping(GRanges_list[["DMR_Good_vs_Bad_Baseline_GRanges"]], GRanges_list[["pchic_GRanges"]])  %>%
   dplyr::filter(Gene_name != ".")
 DMR[["DMR_Good_vs_Bad_Baseline_annotated"]] <- DMR[["DMR_Good_vs_Bad_Baseline"]]$BumphunterDMR[overlap$DMR_name,]
 DMR[["DMR_Good_vs_Bad_Baseline_annotated"]]$Gene_name <- overlap$Gene_name

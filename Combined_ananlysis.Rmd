@@ -1,0 +1,33 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r, include = F}
+library(dplyr)
+load("~/R_data/Patients_data.RData")
+
+Gene_Good_bad_DMR_promoter <- read.csv("Results_DMR/Gene_good_bad_DMR_promoter.csv")$x
+Gene_Good_bad_DMR_connected_promoter <- read.csv("Results_DMR/Gene_Good_bad_DMR_connected_promoter.csv")$x
+
+DEG_Bad_Good <- read.csv("~/GitHub/PhD_project/Analysis/In_silico/Results_koichi_multiomic/NR_R_GE.csv") %>% 
+  dplyr::filter(abs(logFC) >= 1.5 & P.Value < 0.05)
+```
+
+## Genes differentially expressed having promoter with DMR
+
+```{r}
+DEG_Bad_Good_with_DMR_promoter <- dplyr::filter(DEG_Bad_Good, ID %in% Gene_Good_bad_DMR_promoter)
+
+DEG_Bad_Good_with_DMR_promoter$ID
+```
+
+## Genes differentially expressed having promoter connected to DMR
+
+```{r}
+DEG_Bad_Good_with_DMR_connected_promoter <- dplyr::filter(DEG_Bad_Good, ID %in% Gene_Good_bad_DMR_connected_promoter)
+
+DEG_Bad_Good_with_DMR_connected_promoter$ID
+```
+
